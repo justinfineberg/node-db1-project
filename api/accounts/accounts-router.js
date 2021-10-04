@@ -14,27 +14,30 @@ router.get('/', async (req, res, next) => {
 router.get('/:id', checkAccountId, async (req, res, next) => {
   try {
     const account = await Accounts.getById(req.params.id)
-    res.json(account)
+    res.json(account[0])
   } catch (err){
     next(err)
   }
 })
 
-router.post('/', checkAccountNameUnique, async (req, res, next) => {
+router.post('/', checkAccountNameUnique, checkAccountPayload, async (req, res, next) => {
   try {
+    req.body.name = req.body.name.trim()
     const newAccount = await Accounts.create(req.body)
-    res.json(newAccount)
+    res.status(201).json(newAccount[0])
   } catch (err){
     next(err)
   }
 })
 
-router.put('/:id', (req, res, next) => {
-  // DO YOUR MAGIC
+router.put('/:id', checkAccountId, checkAccountPayload, async (req, res, next) => {
+  const updatedAccount = await Accounts.updateById(req.params.id, req.body)
+  res.status(200).json(updatedAccount[0])
 });
 
-router.delete('/:id', (req, res, next) => {
-  // DO YOUR MAGIC
+router.delete('/:id', checkAccountId, async (req, res, next) => {
+  const deleteAccount = await Accounts.deleteById(req.params.id)
+  res.json(deleteAccount)
 })
 
 router.use((err, req, res, next) => { // eslint-disable-line

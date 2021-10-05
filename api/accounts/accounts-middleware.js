@@ -2,8 +2,9 @@ const Accounts = require('./accounts-model')
 const db = require('../../data/db-config')
 
 exports.checkAccountPayload = (req, res, next) => {
-  if (!req.body.name || !req.body.budget ){
-    res.status(400).send( {message: "name and budget are required"} )
+  console.log('here')
+  if (req.body.name === undefined || req.body.budget === undefined){
+    res.status(400).json({message: "name and budget are required"})
   } else if (typeof req.body.name !== 'string'){
     res.status(400).json({ message: "name of account must be a string" })
   } else if (typeof req.body.budget !== 'number'){
